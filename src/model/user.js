@@ -1,4 +1,7 @@
 import { model, Schema } from "mongoose";
+import bcrypt from "bcrypt";
+
+const BCRYPT_SALT_ROUNDS = 10;
 
 const UserSchema = new Schema({
   email: { type: String, unique: true, required: true },
@@ -26,6 +29,22 @@ const UserSchema = new Schema({
     updatedAt: "DateTime",
   },
 });
+
+UserSchema.methods.serialize = function() {
+  const data = this.toJSON();
+  delete data.password;
+  return data;
+};
+
+UserSchema.methods.setPassword = async function(password) {
+  const salt = await bcrypt.genSalt(BCRYPT_SALT_ROUNDS);
+  const hash = await bcrypt.hash(password, salt);
+  this.password = hash;
+};
+
+UserSchema.methods.checkPassword = async function(password) {
+  return await bcrypt.compare(password, this.password);
+};
 
 const User = model("User", UserSchema);
 

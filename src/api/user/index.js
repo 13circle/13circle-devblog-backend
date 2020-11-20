@@ -5,12 +5,13 @@ import * as usersCtrl from "./users.ctrl";
 const users = new Router();
 
 users.post("/register", usersCtrl.register);
+users.post("/login", usersCtrl.login);
+users.patch("/edit", usersCtrl.edit);
 /*
-user.post("/login", ());
-user.get("/check", ());
-user.post("/logout", ());
-user.patch("/edit", ());
-user.delete("/unregister", ());
+users.post("/login", ());
+users.get("/check", ());
+users.post("/logout", ());
+users.delete("/unregister", ());
 */
 
 export default users;
