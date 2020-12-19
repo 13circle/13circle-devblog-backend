@@ -22,11 +22,10 @@ export const register = async (ctx, next) => {
   try {
     const isExists = {
       email: await User.findOne({ email }),
-      name: await User.findOne({ name }),
       nickname: await User.findOne({ nickname }),
     };
 
-    if (isExists.email || isExists.name || isExists.nickname) {
+    if (isExists.email || isExists.nickname) {
       ctx.status = 409;
       return;
     }
