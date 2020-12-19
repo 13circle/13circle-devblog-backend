@@ -4,7 +4,6 @@ const CommentSchema = new Schema({
   author: {
     type: Schema.Types.ObjectId,
     ref: "User",
-    unique: true,
     required: true,
   },
   post: {

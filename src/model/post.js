@@ -4,7 +4,6 @@ const PostSchema = new Schema({
   author: {
     type: Schema.Types.ObjectId,
     ref: "User",
-    unique: true,
     required: true,
   },
   tags: {
@@ -14,8 +13,8 @@ const PostSchema = new Schema({
   },
   title: { type: String, unique: true, required: true },
   content: { type: String, requried: true },
-  views: Number,
-  likes: Number,
+  views: { type: Number, default: 0 },
+  likes: { type: Number, default: 0 },
 }, {
   timestamps: {
     createdAt: "DateTime",
