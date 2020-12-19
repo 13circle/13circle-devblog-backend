@@ -21,8 +21,8 @@ const CommentSchema = new Schema({
   },
 }, {
   timestamps: {
-    createdAt: "DateTime",
-    updatedAt: "DateTime",
+    createdAt: "createdAt",
+    updatedAt: "updatedAt",
   },
 });
 
