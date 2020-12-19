@@ -17,8 +17,8 @@ const PostSchema = new Schema({
   likes: { type: Number, default: 0 },
 }, {
   timestamps: {
-    createdAt: "DateTime",
-    updatedAt: "DateTime",
+    createdAt: "createdAt",
+    updatedAt: "updatedAt",
   },
 });
 

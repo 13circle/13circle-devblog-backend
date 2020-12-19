@@ -6,7 +6,7 @@ const BCRYPT_SALT_ROUNDS = 10;
 const UserSchema = new Schema({
   email: { type: String, unique: true, required: true },
   password: { type: String, required: true },
-  name: { type: String, unique: true, required: true },
+  name: { type: String, required: true },
   nickname: { type: String, unique: true, required: true },
   privilege: {
     type: String,
@@ -25,8 +25,8 @@ const UserSchema = new Schema({
   },
 }, {
   timestamps: {
-    createdAt: "DateTime",
-    updatedAt: "DateTime",
+    createdAt: "createAt",
+    updatedAt: "updatedAt",
   },
 });
 
