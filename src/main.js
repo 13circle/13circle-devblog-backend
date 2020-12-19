@@ -10,6 +10,10 @@ dotenv.config();
 
 const { PORT, MONGO_URI } = process.env;
 
+if(!MONGO_URI) {
+  throw Error("No MONGO_URI to connect with the MongoDB");
+}
+
 async function connectDB() {
   try {
     await mongoose.connect(MONGO_URI, {
