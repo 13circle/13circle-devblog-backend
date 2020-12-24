@@ -13,6 +13,9 @@ export const mylist = async (ctx, next) => {
 };
 
 export const doc = async (ctx, next) => {
+  const schema = Joi.object().keys({
+    id: Joi.number().required(),
+  });
   ctx.body = "GET /posts/doc/:id";
 };
 
@@ -25,9 +28,15 @@ export const add = async (ctx, next) => {
 };
 
 export const edit = async (ctx, next) => {
+  const schema = Joi.object().keys({
+    id: Joi.number().required(),
+  });
   ctx.body = "PATCH /posts/:id";
 };
 
 export const remove = async (ctx, next) => {
+  const schema = Joi.object().keys({
+    id: Joi.number().required(),
+  });
   ctx.body = "DELETE /posts/:id";
 };
