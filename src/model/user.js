@@ -13,6 +13,11 @@ const UserSchema = new Schema({
     enum: [ "SysAdmin", "Admin", "User" ],
     required: true,
   },
+  myPosts: {
+    type: [ Schema.Types.ObjectId ],
+    ref: "Post",
+    required: true,
+  },
   likedPosts: {
     type: [ Schema.Types.ObjectId ],
     ref: "Post",
