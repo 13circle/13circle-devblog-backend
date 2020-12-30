@@ -2,6 +2,10 @@ import Joi from "joi";
 
 import User from "../../model/user";
 
+export const check = async (ctx, next) => {
+  ctx.body = "GET /api/users/check";
+};
+
 export const register = async (ctx, next) => {
   const schema = Joi.object().keys({
     email: Joi.string().email().required(),
@@ -81,10 +85,14 @@ export const login = async (ctx, next) => {
       return;
     }
 
-    ctx.body = user.serialize();
+    ctx.body = user.getToken();
   } catch (e) {
     ctx.throw(500, e);
   }
+};
+
+export const logout = async (ctx, next) => {
+  ctx.body = "POST /api/users/logout";
 };
 
 export const edit = async (ctx, next) => {
@@ -122,7 +130,7 @@ export const edit = async (ctx, next) => {
       return;
     }
 
-    if(reqBody.newPassword) {
+    if (reqBody.newPassword) {
       await user.setPassword(reqBody.newPassword);
     }
 
@@ -131,6 +139,47 @@ export const edit = async (ctx, next) => {
     await user.save();
 
     ctx.body = user.serialize();
+  } catch (e) {
+    ctx.throw(500, e);
+  }
+};
+
+export const unregister = async (ctx, next) => {
+  const schema = Joi.object().keys({
+    email: Joi.string().email().required(),
+    password: Joi.string().min(12).required(),
+  });
+
+  const result = schema.validate(ctx.request.body);
+  if (result.error) {
+    ctx.status = 400;
+    ctx.body = result.error;
+    return;
+  }
+
+  const { email, password } = ctx.request.body;
+  if (!email || !password) {
+    ctx.status = 401;
+    return;
+  }
+
+  try {
+    const user = await User.findOne({ email });
+    if (!user) {
+      ctx.status = 401;
+      return;
+    }
+
+    const isValid = await user.checkPassword(password);
+    if (!isValid) {
+      ctx.status = 401;
+      return;
+    }
+
+    const nickname = user.toJSON().nickname;
+    await user.deleteOne();
+
+    ctx.body = `Bye, ${nickname}!`;
   } catch (e) {
     ctx.throw(500, e);
   }
