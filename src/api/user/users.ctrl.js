@@ -3,7 +3,8 @@ import Joi from "joi";
 import User from "../../model/user";
 
 export const check = async (ctx, next) => {
-  ctx.body = "GET /api/users/check";
+  const { user } = ctx.state;
+  ctx.body = user;
 };
 
 export const register = async (ctx, next) => {
