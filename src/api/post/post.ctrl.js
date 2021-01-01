@@ -1,4 +1,4 @@
-import Joi from "joi";
+import Joi from "joi"
 
 import User from "../../model/user";
 import Post from "../../model/post";
@@ -22,7 +22,7 @@ export const mylist = async (ctx, next) => {
   const { author } = ctx.request.params;
 
   try {
-    const post = await User.find({ nickname: author }).populate("myPosts");
+    const post = await User.findOne({ nickname: author }).populate("myPosts");
     if (post.length === 0) {
       ctx.status = 404;
       return;
@@ -38,13 +38,12 @@ export const mylist = async (ctx, next) => {
 
 export const doc = async (ctx, next) => {
   const schema = Joi.object().keys({
-    id: Joi.number().required(),
+    id: Joi.string().required(),
   });
   ctx.body = "GET /posts/doc/" + ctx.request.params.id;
 };
 
 export const search = async (ctx, next) => {
-  const schema = Joi.object().keys;
   ctx.body = "GET /posts/search";
 };
 
@@ -54,14 +53,22 @@ export const add = async (ctx, next) => {
 
 export const edit = async (ctx, next) => {
   const schema = Joi.object().keys({
-    id: Joi.number().required(),
+    id: Joi.string().required(),
   });
+
+  const result = schema.validate(ctx.request.params);
+  if (result.error) {
+    ctx.status = 400;
+    ctx.body = result.error;
+    return;
+  }
+
   ctx.body = "PATCH /posts/" + ctx.request.params.id;
 };
 
 export const remove = async (ctx, next) => {
   const schema = Joi.object().keys({
-    id: Joi.number().required(),
+    id: Joi.string().required(),
   });
   ctx.body = "DELETE /posts/" + ctx.request.params.id;
 };
