@@ -2,12 +2,12 @@ import Joi from "joi";
 
 import User from "../../model/user";
 
-export const check = async (ctx, next) => {
+export const check = async (ctx) => {
   const { user } = ctx.state;
   ctx.body = user;
 };
 
-export const register = async (ctx, next) => {
+export const register = async (ctx) => {
   const schema = Joi.object().keys({
     email: Joi.string().email().required(),
     password: Joi.string().min(12).required(),
@@ -54,7 +54,7 @@ export const register = async (ctx, next) => {
   }
 };
 
-export const login = async (ctx, next) => {
+export const login = async (ctx) => {
   const schema = Joi.object().keys({
     email: Joi.string().email().required(),
     password: Joi.string().min(12).required(),
@@ -92,11 +92,11 @@ export const login = async (ctx, next) => {
   }
 };
 
-export const logout = async (ctx, next) => {
+export const logout = async (ctx) => {
   ctx.body = "POST /api/users/logout";
 };
 
-export const edit = async (ctx, next) => {
+export const edit = async (ctx) => {
   const schema = Joi.object().keys({
     email: Joi.string().email().required(),
     password: Joi.string().min(12).required(),
@@ -145,7 +145,7 @@ export const edit = async (ctx, next) => {
   }
 };
 
-export const unregister = async (ctx, next) => {
+export const unregister = async (ctx) => {
   const schema = Joi.object().keys({
     email: Joi.string().email().required(),
     password: Joi.string().min(12).required(),

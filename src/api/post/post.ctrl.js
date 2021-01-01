@@ -3,11 +3,11 @@ import Joi from "joi"
 import User from "../../model/user";
 import Post from "../../model/post";
 
-export const list = async (ctx, next) => {
+export const list = async (ctx) => {
   ctx.body = "GET /posts";
 };
 
-export const mylist = async (ctx, next) => {
+export const mylist = async (ctx) => {
   const schema = Joi.object().keys({
     author: Joi.string().required(),
   });
@@ -36,22 +36,22 @@ export const mylist = async (ctx, next) => {
   ctx.body = "GET /posts/mylist/" + ctx.request.params.author;
 };
 
-export const doc = async (ctx, next) => {
+export const doc = async (ctx) => {
   const schema = Joi.object().keys({
     id: Joi.string().required(),
   });
   ctx.body = "GET /posts/doc/" + ctx.request.params.id;
 };
 
-export const search = async (ctx, next) => {
+export const search = async (ctx) => {
   ctx.body = "GET /posts/search";
 };
 
-export const add = async (ctx, next) => {
+export const add = async (ctx) => {
   ctx.body = "POST /posts";
 };
 
-export const edit = async (ctx, next) => {
+export const edit = async (ctx) => {
   const schema = Joi.object().keys({
     id: Joi.string().required(),
   });
@@ -66,7 +66,7 @@ export const edit = async (ctx, next) => {
   ctx.body = "PATCH /posts/" + ctx.request.params.id;
 };
 
-export const remove = async (ctx, next) => {
+export const remove = async (ctx) => {
   const schema = Joi.object().keys({
     id: Joi.string().required(),
   });
