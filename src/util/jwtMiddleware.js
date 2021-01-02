@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 
-export const jwtMiddleware = (ctx, next) => {
+const jwtMiddleware = (ctx, next) => {
   const token = ctx.cookies.get("access_token");
   if (!token) return next();
   try {
@@ -15,3 +15,5 @@ export const jwtMiddleware = (ctx, next) => {
     return next();
   }
 };
+
+export default jwtMiddleware;
