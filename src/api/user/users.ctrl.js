@@ -1,10 +1,19 @@
 import Joi from "joi";
+import jwt from "jsonwebtoken";
 
 import User from "../../model/user";
 
 export const check = async (ctx) => {
-  const { user } = ctx.state;
-  ctx.body = user;
+  const { authorization } = ctx.request.header;
+  const token = authorization.split(" ")[1];
+
+  try {
+    const result = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findById(result.id);
+    ctx.body = user.serialize();
+  } catch(e) {
+    ctx.throw(401, e);
+  }
 };
 
 export const register = async (ctx) => {
