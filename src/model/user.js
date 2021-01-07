@@ -57,7 +57,13 @@ UserSchema.methods.checkPassword = async function (password) {
 };
 
 UserSchema.methods.getToken = function () {
-  return jwt.sign({ id: this._id }, process.env.JWT_SECRET, { expiresIn: "7d" });
+  return jwt.sign(
+    {
+      id: this._id,
+    },
+    process.env.JWT_SECRET,
+    { expiresIn: "7d" },
+  );
 };
 
 const User = model("User", UserSchema);
