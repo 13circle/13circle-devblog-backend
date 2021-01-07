@@ -1,15 +1,18 @@
 import jwt from "jsonwebtoken";
+import User from "../model/user";
 
-const jwtMiddleware = (ctx, next) => {
-  const token = ctx.cookies.get("access_token");
-  if (!token) return next();
+const jwtMiddleware = async (ctx, next) => {
+  const { authroization } = ctx.request.headers;
+  if (!authroization) return next;
+
+  const token = authroization.split(" ")[1];
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findById(decoded.id);
     ctx.state.user = {
-      id: decoded._id,
-      username: decoded.nickname,
+      id: user._id,
+      nickname: user.nickname,
     };
-    console.log(decoded);
     return next();
   } catch (e) {
     return next();
