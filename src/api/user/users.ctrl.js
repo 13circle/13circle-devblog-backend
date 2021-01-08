@@ -101,10 +101,6 @@ export const login = async (ctx) => {
   }
 };
 
-export const logout = async (ctx) => {
-  ctx.body = "POST /api/users/logout";
-};
-
 export const edit = async (ctx) => {
   const schema = Joi.object().keys({
     email: Joi.string().email().required(),
