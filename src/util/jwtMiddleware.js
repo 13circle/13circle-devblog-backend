@@ -3,7 +3,7 @@ import User from "../model/user";
 
 const jwtMiddleware = async (ctx, next) => {
   const { authroization } = ctx.request.headers;
-  if (!authroization) return next;
+  if (!authroization) return next();
 
   const token = authroization.split(" ")[1];
   try {
