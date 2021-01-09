@@ -2,10 +2,10 @@ import jwt from "jsonwebtoken";
 import User from "../model/user";
 
 const jwtMiddleware = async (ctx, next) => {
-  const { authroization } = ctx.request.headers;
-  if (!authroization) return next();
+  const { authorization } = ctx.request.headers;
+  if (!authorization) return next();
 
-  const token = authroization.split(" ")[1];
+  const token = authorization.split(" ")[1];
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const user = await User.findById(decoded.id);
