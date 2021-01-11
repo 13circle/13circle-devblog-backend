@@ -11,7 +11,7 @@ const getCurrentPost = async (ctx, next) => {
   }
 
   try {
-    const post = await Post.findById(id).populate("author", "-password");
+    const post = await Post.findById(id).populate("author", "-password -name");
 
     if (!post) {
       ctx.status = 404;
