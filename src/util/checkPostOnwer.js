@@ -7,7 +7,7 @@ const checkPostOnwer = (ctx, next) => {
     return;
   }
 
-  if (post.author._id.toString() !== user._id.toString()) {
+  if (post.author._id.toString() !== user.id.toString()) {
     ctx.status = 403;
     return;
   }
