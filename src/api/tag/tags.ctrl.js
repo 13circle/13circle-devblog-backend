@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import Joi from "joi";
 
 import Tag from "../../model/tag";
@@ -24,7 +25,7 @@ export const list = async (ctx) => {
 
 export const create = async (ctx) => {
   const schema = Joi.object({
-    tagName: Joi.string().required(),
+    tagName: Joi.string().regex(/^\S+$/),
   });
 
   const result = schema.validate(ctx.request.body);
@@ -38,8 +39,8 @@ export const create = async (ctx) => {
 
   try {
     const isTagExists = await Tag.findOne({ tagName });
-    if(isTagExists) {
-      ctx.status = 400;
+    if (isTagExists) {
+      ctx.status = 409;
       return;
     }
 
@@ -48,6 +49,26 @@ export const create = async (ctx) => {
 
     ctx.body = tag;
   } catch (e) {
+    ctx.throw(500, e);
+  }
+};
+
+export const remove = async (ctx) => {
+  const { id } = ctx.params;
+
+  if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+    ctx.status = 400;
+    return;
+  }
+
+  try {
+    const tag = await Tag.findById(id);
+    const { tagName } = tag;
+
+    await tag.deleteOne();
+
+    ctx.body = tagName;
+  } catch(e) {
     ctx.throw(500, e);
   }
 };
