@@ -18,7 +18,7 @@ const getCurrentPost = async (ctx, next) => {
       return;
     }
 
-    ctx.status.post = post;
+    ctx.state.post = post;
     return next();
   } catch (e) {
     ctx.throw(500, e);
