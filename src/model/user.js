@@ -16,21 +16,27 @@ const UserSchema = new Schema(
       default: "User",
       required: true,
     },
-    myPosts: {
-      type: [Schema.Types.ObjectId],
-      ref: "Post",
-      required: true,
-    },
-    likedPosts: {
-      type: [Schema.Types.ObjectId],
-      ref: "Post",
-      required: true,
-    },
-    favoredTags: {
-      type: [Schema.Types.ObjectId],
-      ref: "Tag",
-      required: true,
-    },
+    myPosts: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Post",
+        required: true,
+      },
+    ],
+    likedPosts: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Post",
+        required: true,
+      },
+    ],
+    favoredTags: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Tag",
+        required: true,
+      },
+    ],
   },
   {
     timestamps: {
