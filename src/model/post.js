@@ -17,8 +17,8 @@ const PostSchema = new Schema(
     comments: [
       {
         type: Schema.Types.ObjectId,
-        ref: "Comment"
-      }
+        ref: "Comment",
+      },
     ],
     title: { type: String, unique: true, required: true },
     content: { type: String, requried: true },
@@ -32,6 +32,10 @@ const PostSchema = new Schema(
     },
   },
 );
+
+PostSchema.methods.getBriefContent = function (maxContentLen) {
+  return this.content.length < maxContentLen ? this.content : `${this.content.slice(0, maxContentLen)}...`;
+};
 
 const Post = model("Post", PostSchema);
 
