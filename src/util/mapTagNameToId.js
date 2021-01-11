@@ -4,7 +4,7 @@ import Tag from "../model/tag";
 
 const mapTagNameToId = async (ctx, next) => {
   const result = Joi.object({
-    tags: Joi.array().min(1).required(),
+    tags: Joi.array().min(1).items(Joi.string().regex(/^\S+$/)).required(),
   })
     .unknown()
     .validate(ctx.request.body);
@@ -23,10 +23,10 @@ const mapTagNameToId = async (ctx, next) => {
   }
 
   try {
-    for(let i in tags) {
+    for (let i in tags) {
       const tag = await Tag.findOne({ tagName: tags[i] });
 
-      if(tag) {
+      if (tag) {
         tags[i] = tag._id;
       } else {
         const newTag = new Tag({ tagName: tags[i] });
