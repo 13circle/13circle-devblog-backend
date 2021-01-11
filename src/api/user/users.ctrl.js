@@ -40,7 +40,6 @@ export const register = async (ctx) => {
       password,
       name,
       nickname,
-      privilege: "User",
     });
     await user.setPassword(password);
     await user.save();
