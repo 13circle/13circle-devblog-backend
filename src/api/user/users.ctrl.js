@@ -93,11 +93,12 @@ export const login = async (ctx) => {
 
 export const edit = async (ctx) => {
   const schema = Joi.object().keys({
-    email: Joi.string().email().required(),
-    password: Joi.string().min(12).required(),
-    newPassword: Joi.string().min(12).optional(),
-    name: Joi.string().optional(),
-    nickname: Joi.string().optional(),
+    email: Joi.string().email(),
+    password: Joi.string().min(12),
+    newPassword: Joi.string().min(12),
+    confirmNewPassword: Joi.string().min(12),
+    name: Joi.string(),
+    nickname: Joi.string(),
   });
 
   const result = schema.validate(ctx.request.body);
@@ -107,31 +108,34 @@ export const edit = async (ctx) => {
     return;
   }
 
-  const reqBody = ctx.request.body;
-  const { email, password } = ctx.request.body;
-  if (!email || !password) {
-    ctx.status = 401;
-    return;
-  }
+  const { email, password, newPassword, confirmNewPassword, name, nickname } = ctx.request.body;
+
   try {
-    const user = await User.findOne({ email });
+    const user = await User.findById(ctx.state.user.id);
     if (!user) {
       ctx.status = 401;
       return;
     }
 
-    const isValid = await user.checkPassword(password);
-    if (!isValid) {
-      ctx.status = 401;
+    if (password && newPassword && confirmNewPassword) {
+      const isValid = await user.checkPassword(password);
+      if (!isValid) {
+        ctx.status = 401;
+        return;
+      }
+
+      if (newPassword === confirmNewPassword) {
+        await user.setPassword(newPassword);
+      }
+    } else {
+      ctx.status = 400;
       return;
     }
 
-    if (reqBody.newPassword) {
-      await user.setPassword(reqBody.newPassword);
-    }
+    user.email = email || user.email;
+    user.name = name || user.name;
+    user.nickname = nickname || user.nickname;
 
-    user.name = reqBody.name || user.name;
-    user.nickname = reqBody.nickname || user.nickname;
     await user.save();
 
     ctx.body = user.serialize();
