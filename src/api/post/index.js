@@ -1,6 +1,7 @@
 import Router from "koa-router";
 
 import checkLoginStatus from "../../util/checkLoginStatus";
+import checkIdParam from "../../util/checkIdParam";
 import getCurrentPost from "../../util/getCurrentPost";
 import checkPostOwner from "../../util/checkPostOnwer";
 import mapTagNameToId from "../../util/mapTagNameToId";
@@ -11,9 +12,9 @@ const posts = new Router();
 
 posts.get("/", postsCtrl.list);
 posts.get("/user/:author", postsCtrl.userPosts);
-posts.get("/:id", getCurrentPost, postsCtrl.doc);
+posts.get("/:id", checkIdParam, getCurrentPost, postsCtrl.doc);
 posts.post("/", checkLoginStatus, mapTagNameToId, postsCtrl.add);
-posts.patch("/:id", checkLoginStatus, getCurrentPost, checkPostOwner, mapTagNameToId, postsCtrl.edit);
-posts.delete("/:id", checkLoginStatus, getCurrentPost, checkPostOwner, postsCtrl.remove);
+posts.patch("/:id", checkLoginStatus, checkIdParam, getCurrentPost, checkPostOwner, mapTagNameToId, postsCtrl.edit);
+posts.delete("/:id", checkLoginStatus, checkIdParam, getCurrentPost, checkPostOwner, postsCtrl.remove);
 
 export default posts;
