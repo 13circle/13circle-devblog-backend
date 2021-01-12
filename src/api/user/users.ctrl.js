@@ -1,6 +1,7 @@
 import Joi from "joi";
 
 import User from "../../model/user";
+import Post from "../../model/post";
 
 export const check = async (ctx) => {
   const { user } = ctx.state;
@@ -146,7 +147,6 @@ export const edit = async (ctx) => {
 
 export const unregister = async (ctx) => {
   const schema = Joi.object().keys({
-    email: Joi.string().email().required(),
     password: Joi.string().min(12).required(),
   });
 
@@ -157,14 +157,14 @@ export const unregister = async (ctx) => {
     return;
   }
 
-  const { email, password } = ctx.request.body;
-  if (!email || !password) {
+  const { password } = ctx.request.body;
+  if (!password) {
     ctx.status = 401;
     return;
   }
 
   try {
-    const user = await User.findOne({ email });
+    const user = await User.findById(ctx.state.user.id);
     if (!user) {
       ctx.status = 401;
       return;
@@ -176,7 +176,9 @@ export const unregister = async (ctx) => {
       return;
     }
 
-    const nickname = user.toJSON().nickname;
+    await Post.deleteMany({ _id: user.toJSON().myPosts });
+
+    const nickname = user.nickname;
     await user.deleteOne();
 
     ctx.body = `Bye, ${nickname}!`;
