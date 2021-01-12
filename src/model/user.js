@@ -1,6 +1,8 @@
 import { model, Schema } from "mongoose";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import sgMail from "@sendgrid/mail";
+import cryptoRandomString from "crypto-random-string";
 
 const BCRYPT_SALT_ROUNDS = 10;
 
@@ -10,6 +12,8 @@ const UserSchema = new Schema(
     password: { type: String, required: true },
     name: { type: String, required: true },
     nickname: { type: String, unique: true, required: true },
+    emailConfirmed: { type: Boolean, default: false, required: true },
+    emailToken: String,
     privilege: {
       type: String,
       enum: ["SysAdmin", "Admin", "User"],
@@ -49,6 +53,7 @@ const UserSchema = new Schema(
 UserSchema.methods.serialize = function () {
   const data = this.toJSON();
   delete data.password;
+  delete data.emailToken;
   return data;
 };
 
@@ -70,6 +75,47 @@ UserSchema.methods.getToken = function () {
     process.env.JWT_SECRET,
     { expiresIn: "7d" },
   );
+};
+
+UserSchema.methods.generateEmailToken = function () {
+  this.emailToken = cryptoRandomString({ length: 32 });
+};
+
+UserSchema.methods.sendConfirmEmail = async function () {
+  const { SENDGRID_SECRET, MAILER_EMAIL, APP_DOMAIN } = process.env;
+
+  try {
+    sgMail.setApiKey(SENDGRID_SECRET);
+
+    await sgMail.send({
+      from: MAILER_EMAIL,
+      to: `${this.nickname} <${this.email}>`,
+      subject: `[13circle DevBlog] Confirm your email!`,
+      html: `
+        <h1>Hi, ${this.nickname}!</h1>
+        <hr />
+        <br />
+        <p>Welcome to 13circle DevBlog!</p>
+        <p>Please click the button below to confirm your email:</p>
+        <br />
+        <div style="text-align: center">
+          <a href="${APP_DOMAIN}/api/users/confirm-email/${this._id}/${this.emailToken}">
+            <input type="button" value="Confirm" style="border:none; padding:1.5em; font-weight:bold; color:#ffffff; background-color:#4770e7">
+          </a>
+        </div>
+        <br />
+        <hr />
+        <br />
+        <p>Please ignore this email if you didn't request this email.</p>
+      `,
+    });
+  } catch (e) {
+    console.error(e);
+
+    if (e.response) {
+      console.error(e.response.body);
+    }
+  }
 };
 
 const User = model("User", UserSchema);

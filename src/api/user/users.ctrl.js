@@ -42,12 +42,12 @@ export const register = async (ctx) => {
       name,
       nickname,
     });
+
     await user.setPassword(password);
+    user.generateEmailToken();
+    await user.sendConfirmEmail();
     await user.save();
 
-    // Alias of:
-    // ctx.response.status = 200;
-    // ctx.response.body = user;
     ctx.body = user.serialize();
   } catch (e) {
     ctx.throw(500, e);
@@ -87,6 +87,65 @@ export const login = async (ctx) => {
     }
 
     ctx.body = user.getToken();
+  } catch (e) {
+    ctx.throw(500, e);
+  }
+};
+
+export const confirmEmail = async (ctx) => {
+  const { id, token } = ctx.params;
+
+  const schema = Joi.string().length(32);
+  const result = schema.validate(token);
+  if (result.error) {
+    ctx.status = 400;
+    ctx.body = result.error;
+    return;
+  }
+
+  try {
+    const user = await User.findById(id);
+    if (!user) {
+      ctx.status = 404;
+      return;
+    }
+
+    if (user.emailToken !== token) {
+      ctx.status = 401;
+      return;
+    }
+
+    user.emailToken = "";
+    user.emailConfirmed = true;
+    await user.save();
+
+    ctx.body = `
+      <script>
+        alert("Successfully confirmed your email!");
+        window.close();
+      </script>
+    `;
+  } catch (e) {
+    ctx.throw(500, e);
+  }
+};
+
+export const resendConfirmEmail = async (ctx) => {
+  const { id } = ctx.params;
+
+  try {
+    const user = await User.findById(id);
+
+    if (!user) {
+      ctx.status = 400;
+      return;
+    }
+
+    user.generateEmailToken();
+    await user.sendConfirmEmail();
+    await user.save();
+
+    ctx.body = user.serialize();
   } catch (e) {
     ctx.throw(500, e);
   }
