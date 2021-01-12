@@ -5,10 +5,10 @@ import checkLoginStatus from "../../util/checkLoginStatus";
 
 const users = new Router();
 
-users.get("/check", checkLoginStatus, usersCtrl.check);
+users.get("/", checkLoginStatus, usersCtrl.check);
 users.post("/register", usersCtrl.register);
 users.post("/login", usersCtrl.login);
-users.patch("/edit", checkLoginStatus, usersCtrl.edit);
-users.delete("/unregister", checkLoginStatus, usersCtrl.unregister);
+users.patch("/", checkLoginStatus, usersCtrl.edit);
+users.delete("/", checkLoginStatus, usersCtrl.unregister);
 
 export default users;
