@@ -6,6 +6,7 @@
   "dependencies": {
     "@sendgrid/mail": "^7.4.1",
     "bcrypt": "^5.0.0",
+    "crypto-random-string": "^3.3.0",
     "dotenv": "^8.2.0",
     "esm": "^3.2.25",
     "joi": "^17.3.0",
