@@ -28,14 +28,14 @@ export const create = async (ctx) => {
     tagName: Joi.string().regex(/^\S+$/),
   });
 
-  const result = schema.validate(ctx.request.body);
+  const result = schema.validate(ctx.params);
   if (result.error) {
     ctx.status = 400;
     ctx.body = result.error;
     return;
   }
 
-  const { tagName } = ctx.request.body;
+  const { tagName } = ctx.params;
 
   try {
     const isTagExists = await Tag.findOne({ tagName });
