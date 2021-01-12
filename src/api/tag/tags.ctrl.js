@@ -5,19 +5,29 @@ import Tag from "../../model/tag";
 
 export const list = async (ctx) => {
   const page = parseInt(ctx.query.page || "1", 10);
+  const { tag } = ctx.query;
 
   if (page < 1) {
     ctx.status = 400;
     return;
   }
 
+  const query = {
+    ...(tag ? { tagName: { $regex: tag, $options: "i" } } : {}),
+  };
+
   try {
     const numTagsPerPage = 30;
-    const tags = await Tag.find()
+    const tags = await Tag.find(query)
       .limit(numTagsPerPage)
       .skip((page - 1) * numTagsPerPage)
       .exec();
-    ctx.body = tags;
+    const tagCount = await Tag.countDocuments(query).exec();
+
+    ctx.body = {
+      lastPage: Math.ceil(tagCount / numTagsPerPage),
+      tags,
+    };
   } catch (e) {
     ctx.throw(500, e);
   }
@@ -68,7 +78,7 @@ export const remove = async (ctx) => {
     await tag.deleteOne();
 
     ctx.body = tagName;
-  } catch(e) {
+  } catch (e) {
     ctx.throw(500, e);
   }
 };
