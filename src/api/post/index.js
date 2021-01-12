@@ -12,7 +12,6 @@ const posts = new Router();
 posts.get("/", postsCtrl.list);
 posts.get("/user/:author", postsCtrl.userPosts);
 posts.get("/:id", getCurrentPost, postsCtrl.doc);
-posts.get("/search", postsCtrl.search);
 posts.post("/", checkLoginStatus, mapTagNameToId, postsCtrl.add);
 posts.patch("/:id", checkLoginStatus, getCurrentPost, checkPostOwner, mapTagNameToId, postsCtrl.edit);
 posts.delete("/:id", checkLoginStatus, getCurrentPost, checkPostOwner, postsCtrl.remove);

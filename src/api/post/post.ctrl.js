@@ -2,12 +2,14 @@ import Joi from "joi";
 
 import User from "../../model/user";
 import Post from "../../model/post";
+import Tag from "../../model/tag";
 
 const numPostsPerPage = 10;
 const maxContentLen = 150;
 
 export const list = async (ctx) => {
   const page = parseInt(ctx.query.page || "1", 10);
+  const { author, title, content, delim, tags } = ctx.query;
 
   if (page < 1) {
     ctx.status = 400;
@@ -15,14 +17,40 @@ export const list = async (ctx) => {
   }
 
   try {
-    const posts = await Post.find({})
+    const user = await User.findOne(
+      author
+        ? {
+            nickname: { $regex: author, $options: "i" },
+          }
+        : {},
+    );
+
+    const tagsArr = delim && tags ? tags.split(delim) : [];
+    for (let i in tagsArr) {
+      const tag = await Tag.findOne({ tagName: tagsArr[i] });
+      if (!tag) {
+        ctx.status = 400;
+        return;
+      }
+
+      tagsArr[i] = tag._id;
+    }
+
+    const query = {
+      ...(user ? { author: user._id } : {}),
+      ...(title ? { title: { $regex: title, $options: "i" } } : {}),
+      ...(content ? { content: { $regex: content, $options: "i" } } : {}),
+      ...(tagsArr.length > 0 ? { tags: { $in: tagsArr } } : {}),
+    };
+
+    const posts = await Post.find(query)
       .populate("author", "nickname")
       .populate("tags", "tagName")
       .sort({ _id: -1 })
       .limit(numPostsPerPage)
       .skip((page - 1) * numPostsPerPage)
       .exec();
-    const postCount = await Post.countDocuments().exec();
+    const postCount = await Post.countDocuments(query).exec();
 
     ctx.body = {
       lastPage: Math.ceil(postCount / numPostsPerPage),
@@ -71,10 +99,6 @@ export const doc = async (ctx) => {
   } catch (e) {
     ctx.throw(500, e);
   }
-};
-
-export const search = async (ctx) => {
-  ctx.body = "GET /posts/search";
 };
 
 export const add = async (ctx) => {
