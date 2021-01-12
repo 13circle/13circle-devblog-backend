@@ -30,7 +30,7 @@ const mapTagNameToId = async (ctx, next) => {
         tags[i] = tag._id;
       } else {
         const newTag = new Tag({ tagName: tags[i] });
-        await newTag.save();
+        await newTag.saveTag();
         tags[i] = newTag._id;
       }
     }

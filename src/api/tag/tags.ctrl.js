@@ -45,7 +45,7 @@ export const create = async (ctx) => {
     }
 
     const tag = new Tag({ tagName });
-    await tag.save();
+    await tag.saveTag();
 
     ctx.body = tag;
   } catch (e) {
