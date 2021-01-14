@@ -3,7 +3,7 @@ import Joi from "joi";
 import User from "../../model/user";
 import Comment from "../../model/comment";
 
-export const read = async (ctx) => {
+export const listByPost = async (ctx) => {
   ctx.body = "GET /comments/:id";
 };
 
