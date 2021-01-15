@@ -9,7 +9,7 @@ import * as commentsCtrl from "./comment.ctrl";
 const comments = new Router();
 
 comments.get("/:id", checkLoginStatus, checkIdParam, getCurrentPost, commentsCtrl.listByPost);
-comments.post("/", checkLoginStatus, commentsCtrl.add);
+comments.post("/:id", checkLoginStatus, checkIdParam, getCurrentPost, commentsCtrl.add);
 comments.patch("/:id", checkLoginStatus, checkIdParam, commentsCtrl.edit);
 comments.delete("/:id", checkLoginStatus, checkIdParam, commentsCtrl.remove);
 
