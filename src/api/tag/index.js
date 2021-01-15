@@ -7,8 +7,8 @@ import checkIdParam from "../../util/checkIdParam";
 
 const tags = new Router();
 
-tags.get("/", tagsCtrl.list);
-tags.post("/:tagName", checkLoginStatus, tagsCtrl.create);
-tags.delete("/:id", checkIdParam, checkLoginStatus, checkAdmin, tagsCtrl.remove);
+tags.get("/list", tagsCtrl.list);
+tags.post("/create/:tagName", checkLoginStatus, tagsCtrl.create);
+tags.delete("/remove/:id", checkIdParam, checkLoginStatus, checkAdmin, tagsCtrl.remove);
 
 export default tags;

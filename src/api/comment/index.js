@@ -8,9 +8,9 @@ import * as commentsCtrl from "./comment.ctrl";
 
 const comments = new Router();
 
-comments.get("/:id", checkLoginStatus, checkIdParam, getCurrentPost, commentsCtrl.listByPost);
-comments.post("/:id", checkLoginStatus, checkIdParam, getCurrentPost, commentsCtrl.add);
-comments.patch("/:id", checkLoginStatus, checkIdParam, commentsCtrl.edit);
-comments.delete("/:id", checkLoginStatus, checkIdParam, commentsCtrl.remove);
+comments.get("/list/:id", checkLoginStatus, checkIdParam, getCurrentPost, commentsCtrl.listByPost);
+comments.post("/add/:id", checkLoginStatus, checkIdParam, getCurrentPost, commentsCtrl.add);
+comments.patch("/edit/:id", checkLoginStatus, checkIdParam, commentsCtrl.edit);
+comments.delete("/remove/:id", checkLoginStatus, checkIdParam, commentsCtrl.remove);
 
 export default comments;

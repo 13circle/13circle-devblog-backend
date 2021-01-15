@@ -11,11 +11,11 @@ import * as postsCtrl from "./post.ctrl";
 
 const posts = new Router();
 
-posts.get("/", postsCtrl.list);
+posts.get("/list", postsCtrl.list);
 posts.get("/user/:author", postsCtrl.userPosts);
-posts.get("/:id", checkIdParam, getCurrentPost, postsCtrl.doc);
-posts.post("/", checkLoginStatus, checkEmailConfirmed, mapTagNameToId, postsCtrl.add);
-posts.patch("/:id", checkLoginStatus, checkIdParam, getCurrentPost, checkPostOwner, mapTagNameToId, postsCtrl.edit);
-posts.delete("/:id", checkLoginStatus, checkIdParam, getCurrentPost, checkPostOwner, postsCtrl.remove);
+posts.get("/doc/:id", checkIdParam, getCurrentPost, postsCtrl.doc);
+posts.post("/add", checkLoginStatus, checkEmailConfirmed, mapTagNameToId, postsCtrl.add);
+posts.patch("/edit/:id", checkLoginStatus, checkIdParam, getCurrentPost, checkPostOwner, mapTagNameToId, postsCtrl.edit);
+posts.delete("/remove/:id", checkLoginStatus, checkIdParam, getCurrentPost, checkPostOwner, postsCtrl.remove);
 
 export default posts;
