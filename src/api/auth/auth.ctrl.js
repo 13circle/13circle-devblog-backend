@@ -142,6 +142,7 @@ export const resendConfirmEmail = async (ctx) => {
     }
 
     user.generateEmailToken();
+    user.emailConfirmed = false;
     await user.sendConfirmEmail();
     await user.save();
 
