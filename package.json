@@ -14,7 +14,8 @@
     "koa-bodyparser": "^4.3.0",
     "koa-logger": "^3.2.1",
     "koa-router": "^10.0.0",
-    "mongoose": "^5.10.12"
+    "mongoose": "^5.10.12",
+    "nodemailer": "^6.4.17"
   },
   "devDependencies": {
     "eslint": "^7.12.1",
