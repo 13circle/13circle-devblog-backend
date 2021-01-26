@@ -1,10 +1,45 @@
 import { model, Schema } from "mongoose";
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
-import sgMail from "@sendgrid/mail";
 import cryptoRandomString from "crypto-random-string";
+import dotenv from "dotenv";
+import jwt from "jsonwebtoken";
+import nodemailer from "nodemailer";
 
 const BCRYPT_SALT_ROUNDS = 10;
+
+dotenv.config();
+
+const {
+  APP_DOMAIN,
+  JWT_SECRET,
+  MAIL_SENDER_SERVICE,
+  MAIL_SENDER_HOST,
+  MAIL_SENDER_PORT,
+  OAUTH_USER,
+  OAUTH_CLIENT_ID,
+  OAUTH_CLIENT_SECRET,
+  OAUTH_REFRESH_TOKEN,
+} = process.env;
+
+if (!APP_DOMAIN) {
+  throw Error("APP_DOMAIN does not exist");
+}
+
+if (!JWT_SECRET) {
+  throw Error("JWT_SECRET does not exist");
+}
+
+["SERVICE", "HOST", "PORT"].forEach((v) => {
+  if (!process.env[`MAIL_SENDER_${v}`]) {
+    throw Error(`MAIL_SENDER_${v} does not exist`);
+  }
+});
+
+["USER", "CLIENT_ID", "CLIENT_SECRET", "REFRESH_TOKEN"].forEach((v) => {
+  if (!process.env[`OAUTH_${v}`]) {
+    throw Error(`OAUTH_${v} does not exist`);
+  }
+});
 
 const UserSchema = new Schema(
   {
@@ -72,7 +107,7 @@ UserSchema.methods.getToken = function () {
     {
       id: this._id,
     },
-    process.env.JWT_SECRET,
+    JWT_SECRET,
     { expiresIn: "7d" },
   );
 };
@@ -82,13 +117,23 @@ UserSchema.methods.generateEmailToken = function () {
 };
 
 UserSchema.methods.sendConfirmEmail = async function () {
-  const { SENDGRID_SECRET, MAILER_EMAIL, APP_DOMAIN } = process.env;
+  const transporter = nodemailer.createTransport({
+    service: MAIL_SENDER_SERVICE,
+    host: MAIL_SENDER_HOST,
+    port: parseInt(MAIL_SENDER_PORT, 10),
+    secure: true,
+    auth: {
+      type: "OAuth2",
+      user: OAUTH_USER,
+      clientId: OAUTH_CLIENT_ID,
+      clientSecret: OAUTH_CLIENT_SECRET,
+      refreshToken: OAUTH_REFRESH_TOKEN,
+    },
+  });
 
   try {
-    sgMail.setApiKey(SENDGRID_SECRET);
-
-    await sgMail.send({
-      from: MAILER_EMAIL,
+    await transporter.sendMail({
+      from: OAUTH_USER,
       to: `${this.nickname} <${this.email}>`,
       subject: `[13circle DevBlog] Confirm your email!`,
       html: `
