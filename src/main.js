@@ -19,6 +19,7 @@ if(!MONGO_URI) {
 async function connectDB() {
   try {
     await mongoose.connect(MONGO_URI, {
+      useCreateIndex: true,
       useNewUrlParser: true,
       useFindAndModify: false,
       useUnifiedTopology: true,
