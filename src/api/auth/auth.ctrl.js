@@ -119,12 +119,7 @@ export const confirmEmail = async (ctx) => {
     user.emailConfirmed = true;
     await user.save();
 
-    ctx.body = `
-      <script>
-        alert("Successfully confirmed your email!");
-        window.close();
-      </script>
-    `;
+    ctx.body = user.serialize();
   } catch (e) {
     ctx.throw(500, e);
   }
