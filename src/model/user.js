@@ -89,6 +89,7 @@ UserSchema.methods.serialize = function () {
   const data = this.toJSON();
   delete data.password;
   delete data.emailToken;
+  delete data.emailConfirmed;
   return data;
 };
 
