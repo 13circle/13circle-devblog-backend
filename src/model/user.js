@@ -10,7 +10,6 @@ const BCRYPT_SALT_ROUNDS = 10;
 dotenv.config();
 
 const {
-  APP_DOMAIN,
   JWT_SECRET,
   MAIL_SENDER_SERVICE,
   MAIL_SENDER_HOST,
@@ -20,10 +19,6 @@ const {
   OAUTH_CLIENT_SECRET,
   OAUTH_REFRESH_TOKEN,
 } = process.env;
-
-if (!APP_DOMAIN) {
-  throw Error("APP_DOMAIN does not exist");
-}
 
 if (!JWT_SECRET) {
   throw Error("JWT_SECRET does not exist");
@@ -134,21 +129,22 @@ UserSchema.methods.sendConfirmEmail = async function () {
 
   try {
     await transporter.sendMail({
-      from: OAUTH_USER,
+      from: `13circle <${OAUTH_USER}>`,
       to: `${this.nickname} <${this.email}>`,
       subject: `[13circle DevBlog] Confirm your email!`,
       html: `
         <h1>Hi, ${this.nickname}!</h1>
         <hr />
         <br />
-        <p>Welcome to 13circle DevBlog!</p>
-        <p>Please click the button below to confirm your email:</p>
+        <p>Please confirm your email with this verification number:</p>
+        <br />
         <br />
         <div style="text-align: center">
-          <a href="${APP_DOMAIN}/api/users/confirm-email/${this._id}/${this.emailToken}">
-            <input type="button" value="Confirm" style="border:none; padding:1.5em; font-weight:bold; color:#ffffff; background-color:#4770e7">
-          </a>
+          <span style="padding:1.5em; font-weight:bold; color:#ffffff; background-color:#4770e7">
+            ${this.emailToken}
+          </span>
         </div>
+        <br />
         <br />
         <hr />
         <br />
