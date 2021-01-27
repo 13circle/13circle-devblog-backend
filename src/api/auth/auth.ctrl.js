@@ -95,7 +95,7 @@ export const login = async (ctx) => {
 export const confirmEmail = async (ctx) => {
   const { id, token } = ctx.params;
 
-  const schema = Joi.string().length(32);
+  const schema = Joi.string().length(6);
   const result = schema.validate(token);
   if (result.error) {
     ctx.status = 400;

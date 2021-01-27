@@ -109,7 +109,7 @@ UserSchema.methods.getToken = function () {
 };
 
 UserSchema.methods.generateEmailToken = function () {
-  this.emailToken = cryptoRandomString({ length: 32 });
+  this.emailToken = cryptoRandomString({ length: 6 });
 };
 
 UserSchema.methods.sendConfirmEmail = async function () {
