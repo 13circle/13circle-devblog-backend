@@ -10,9 +10,15 @@ import jwtMiddleware from "./util/jwtMiddleware";
 
 dotenv.config();
 
-const { PORT, MONGO_URI } = process.env;
+const { NODE_ENV, PORT, MONGO_URI } = process.env;
 
-if(!MONGO_URI) {
+if (!NODE_ENV) {
+  throw Error("No NODE_ENV to specify app environment status");
+} else if (NODE_ENV !== "development" && NODE_ENV !== "production") {
+  throw Error("NODE_ENV must be 'development' or 'production'");
+}
+
+if (!MONGO_URI) {
   throw Error("No MONGO_URI to connect with the MongoDB");
 }
 
@@ -36,7 +42,12 @@ const router = new Router();
 
 router.use("/api", api.routes());
 
-app.use(logger());
+if (NODE_ENV === "development") {
+  app.use(logger());
+} else {
+  console.log = function () {};
+}
+
 app.use(bodyParser());
 app.use(jwtMiddleware);
 app.use(router.routes()).use(router.allowedMethods());
