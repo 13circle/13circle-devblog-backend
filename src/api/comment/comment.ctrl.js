@@ -1,7 +1,6 @@
 import Joi from "joi";
 import mongoose from "mongoose";
 
-import User from "../../model/user";
 import Comment from "../../model/comment";
 import Post from "../../model/post";
 
