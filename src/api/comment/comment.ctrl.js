@@ -77,7 +77,32 @@ export const add = async (ctx) => {
 };
 
 export const edit = async (ctx) => {
-  ctx.body = "PATCH /comments/:id";
+  const schema = Joi.object().keys({
+    content: Joi.string(),
+  });
+
+  const result = schema.validate(ctx.request.body);
+  if (result.error) {
+    ctx.status = 400;
+    ctx.body = result.error;
+    return;
+  }
+
+  const { id } = ctx.params;
+
+  try {
+    const modified = await Comment.findByIdAndUpdate(
+      id,
+      {
+        ...ctx.request.body,
+      },
+      { new: true },
+    );
+
+    ctx.body = modified;
+  } catch (e) {
+    ctx.throw(500, e);
+  }
 };
 
 export const remove = async (ctx) => {
