@@ -6,7 +6,12 @@ import Post from "../../model/post";
 
 export const listByPost = async (ctx) => {
   try {
-    const comments = await Comment.find({ post: ctx.state.post._id }).sort({ _id: -1 }).exec();
+    const comments = await Comment.find({
+      post: ctx.state.post._id,
+    })
+      .sort({ _id: -1 })
+      .exec();
+    //
 
     ctx.body = comments;
   } catch (e) {
@@ -76,5 +81,13 @@ export const edit = async (ctx) => {
 };
 
 export const remove = async (ctx) => {
-  ctx.body = "DELETE /comments/:id";
+  const { id } = ctx.params;
+
+  try {
+    await Comment.findByIdAndDelete(id);
+
+    ctx.status = 204;
+  } catch (e) {
+    ctx.throw(500, e);
+  }
 };
