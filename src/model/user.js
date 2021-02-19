@@ -3,6 +3,7 @@ import bcrypt from "bcrypt";
 import cryptoRandomString from "crypto-random-string";
 import dotenv from "dotenv";
 import jwt from "jsonwebtoken";
+import timezone from "mongoose-timezone";
 import nodemailer from "nodemailer";
 
 const BCRYPT_SALT_ROUNDS = 10;
@@ -159,6 +160,8 @@ UserSchema.methods.sendConfirmEmail = async function () {
     }
   }
 };
+
+UserSchema.plugin(timezone);
 
 const User = model("User", UserSchema);
 

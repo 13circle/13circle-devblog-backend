@@ -1,4 +1,5 @@
 import { model, Schema } from "mongoose";
+import timezone from "mongoose-timezone";
 
 const CommentSchema = new Schema({
   author: {
@@ -25,6 +26,8 @@ const CommentSchema = new Schema({
     updatedAt: "updatedAt",
   },
 });
+
+CommentSchema.plugin(timezone);
 
 const Comment = model("Comment", CommentSchema);
 

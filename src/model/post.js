@@ -1,4 +1,5 @@
 import { model, Schema } from "mongoose";
+import timezone from "mongoose-timezone";
 
 const PostSchema = new Schema(
   {
@@ -36,6 +37,8 @@ const PostSchema = new Schema(
 PostSchema.methods.getBriefContent = function (maxContentLen) {
   return this.content.length < maxContentLen ? this.content : `${this.content.slice(0, maxContentLen)}...`;
 };
+
+PostSchema.plugin(timezone);
 
 const Post = model("Post", PostSchema);
 
