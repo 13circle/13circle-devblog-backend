@@ -1,0 +1,27 @@
+version: '3'
+services:
+  app:
+    container_name: 13circle_devblog_backend
+    restart: always
+    build: .
+    env_file: .env
+    ports:
+      - '4000:4000'
+    networks:
+      - network
+  mongo:
+    container_name: 13circle_devblog_mongo
+    restart: always
+    image: mongo
+    logging:
+      driver: none
+    volumes:
+      - ./mongo:/data/db
+    ports:
+      - '37017:27017'
+    networks:
+      - network
+
+networks:
+  network:
+    driver: bridge
