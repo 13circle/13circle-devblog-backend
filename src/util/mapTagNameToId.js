@@ -24,13 +24,15 @@ const mapTagNameToId = async (ctx, next) => {
 
   try {
     for (let i in tags) {
+      tags[i] = tags[i].toLowerCase();
+
       const tag = await Tag.findOne({ tagName: tags[i] });
 
       if (tag) {
         tags[i] = tag._id;
       } else {
         const newTag = new Tag({ tagName: tags[i] });
-        await newTag.saveTag();
+        await newTag.save();
         tags[i] = newTag._id;
       }
     }
