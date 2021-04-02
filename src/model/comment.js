@@ -15,11 +15,13 @@ const CommentSchema = new Schema(
     parent: {
       type: Schema.Types.ObjectId,
       ref: "Comment",
+      default: null,
     },
     children: [
       {
         type: Schema.Types.ObjectId,
         ref: "Comment",
+        default: null,
       },
     ],
     content: {
